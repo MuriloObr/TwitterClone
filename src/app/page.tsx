@@ -1,113 +1,189 @@
-import Image from 'next/image'
+"use client";
+
+import { AsideMenu } from "@/components/AsideMenu";
+import { TwitterFeedHeader } from "@/components/TwitterFeedHeader";
+import { Tweet } from "@/components/Tweet";
+import { RecommendedItem } from "@/components/RecommendItem";
+import Link from "next/link";
+import Image from "next/image";
+import { useContext, useState } from "react";
+import { MagnifyingGlass, X } from "@phosphor-icons/react";
+import { UserContext } from "./contexts/userContext/UserContext";
+import { TweetsContext } from "./contexts/newTweetContext/TweetsContext";
 
 export default function Home() {
+  const {
+    userData: { userName, userTag },
+  } = useContext(UserContext);
+  const { tweets, addTweet } = useContext(TweetsContext);
+  const [searchText, setSearchText] = useState("");
+  const [searchFocus, setSearchFocus] = useState(false);
+  const [newTweet, setNewTweet] = useState("");
+
+  function addNewTweet() {
+    if (newTweet.trim() === "") return;
+    addTweet({
+      userImg: `https://github.com/${userTag}.png`,
+      userName: userName,
+      tagName: userTag,
+      content: newTweet,
+      reply: 0,
+      retweet: 0,
+      like: 0,
+      views: 0,
+    });
+    setNewTweet("");
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
+    <div className="grid grid-cols-6 bg-white text-twitter-black mx-auto max-2xl:mx-6 w-2/3">
+      <AsideMenu />
+      <main className="col-start-2 col-span-5 h-screen w-full max-2xl:w-[85vw] ml-5 grid grid-cols-3 px-8 max-2xl:px-2">
+        <div className="border-x-[1px] border-slate-400 w-11/12 max-lg:w-[78vw] col-span-2 max-md:col-span-full grid grid-cols-2 grid-rows-[50px_60px_.16fr_1fr]">
+          <TwitterFeedHeader tittle="home" />
+
+          <div className="col-span-2 border-b-[1px] border-slate-400 h-fit p-3 flex flex-wrap gap-2 items-center justify-center">
             <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
+              src={`https://github.com/${userTag}.png`}
+              height={50}
+              width={50}
+              alt="User Image"
+              className="rounded-full self-start"
             />
-          </a>
+            <textarea
+              name="whatIsHappening"
+              id="whatIsHappening"
+              placeholder="What is Happening?!"
+              value={newTweet}
+              className="h-8 w-10/12 mt-2 pb-4 text-xl outline-0 resize-none focus:border-b-[1px] focus:border-slate-400"
+              onInput={(event) => {
+                const textarea = event.target as HTMLInputElement;
+                textarea.style.height = "auto";
+                const scHeight = textarea.scrollHeight;
+                textarea.style.height = `${scHeight}px`;
+
+                setNewTweet(textarea.value);
+              }}
+            />
+            <input
+              type="button"
+              value="Tweet"
+              className="w-fit h-fit px-4 py-1.5 ml-auto rounded-full bg-twitter-blue text-lg text-white font-bold cursor-pointer hover:brightness-95"
+              onClick={addNewTweet}
+            />
+          </div>
+          <div className="col-span-2">
+            {tweets.map((tweet, index) => {
+              return (
+                <Tweet
+                  key={index}
+                  userImg={tweet.userImg}
+                  userName={tweet.userName}
+                  tagName={tweet.tagName}
+                  content={tweet.content}
+                  reply={tweet.reply}
+                  retweet={tweet.retweet}
+                  like={tweet.like}
+                  views={tweet.views}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore the Next.js 13 playground.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+        <div className="py-1 max-lg:hidden">
+          <div className="group flex relative items-center gap-x-4 px-5 py-2.5 border-2 bg-twitter-lightGray/80 h-fit w-full rounded-full focus-within:border-twitter-blue">
+            <MagnifyingGlass
+              size={22}
+              className="text-twitter-darkGray group-focus-within:text-twitter-blue"
+            />
+            <input
+              type="text"
+              placeholder="Search Twitter"
+              value={searchText}
+              className="w-5/6 bg-transparent outline-none border-none placeholder:text-twitter-darkGray"
+              onInput={(event) =>
+                setSearchText((event.target as HTMLInputElement).value)
+              }
+              onFocus={() => setSearchFocus(true)}
+              onBlur={() => setSearchFocus(false)}
+            />
+            {searchText !== "" && searchFocus ? (
+              <X
+                size={18}
+                className="h-fit w-fit p-1 absolute right-2 bg-twitter-blue text-white rounded-full cursor-pointer"
+                onMouseDown={() => setSearchText("")}
+              />
+            ) : (
+              ""
+            )}
+          </div>
+          <aside className="h-full">
+            <section className="h-fit mt-3 py-3 bg-twitter-darkGray/40 rounded-2xl">
+              <h2 className="text-xl font-bold tracking-tighter mb-3 px-4">
+                {"What's happening"}
+              </h2>
+              <RecommendedItem
+                type="happening"
+                tag="Brazil - Cascavel"
+                tittle="Next, Back-end ou Front-end?"
+                recommendArr={[128000, ""]}
+              />
+              <RecommendedItem
+                type="happening"
+                tag="World"
+                tittle="Functional or OOP?"
+                recommendArr={[632000, ""]}
+              />
+              <RecommendedItem
+                type="happening"
+                tag="Brazil - Counter Strike"
+                tittle="FalleN e Fer na Furia?"
+                recommendArr={[52000, ""]}
+                trending
+              />
+              <RecommendedItem
+                type="happening"
+                tag="World - NBA"
+                tittle="Jovic or Butler?"
+                recommendArr={[124000, ""]}
+                trending
+              />
+            </section>
+            <section className="h-fit mt-3 py-3 bg-twitter-darkGray/40 rounded-2xl">
+              <h2 className="mb-3 px-4 text-xl font-bold tracking-tighter">
+                Who to follow
+              </h2>
+              <RecommendedItem
+                type="follow"
+                tag="NBABrasil"
+                tittle="NBA Brasil"
+                recommendArr={[
+                  0,
+                  "https://pbs.twimg.com/profile_images/1665746573555367938/Ufgf7cmZ_400x400.jpg",
+                ]}
+              />
+              <RecommendedItem
+                type="follow"
+                tag="MagnusCarlsen"
+                tittle="Magunus Carlsen"
+                recommendArr={[
+                  0,
+                  "https://pbs.twimg.com/profile_images/1384791850259783681/y9O88Dj8_400x400.jpg",
+                ]}
+              />
+              <RecommendedItem
+                type="follow"
+                tag="FalleNCS"
+                tittle="Gabriel Toledo"
+                recommendArr={[
+                  0,
+                  "https://pbs.twimg.com/profile_images/1598049196057235477/T-HpwJU1_400x400.jpg",
+                ]}
+              />
+            </section>
+          </aside>
+        </div>
+      </main>
+    </div>
+  );
 }
