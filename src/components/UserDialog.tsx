@@ -22,7 +22,7 @@ export function UserDialog({ opened }: { opened: number }) {
   return (
     <dialog
       ref={thatDialog}
-      className="h-fit w-2/6 p-6 backdrop:bg-zinc-700/40 rounded-xl"
+      className="h-fit w-2/6 p-6 backdrop:bg-zinc-700/40 rounded-xl max-lg:w-5/6"
     >
       <div className="flex flex-col gap-2 relative">
         <h3 className="text-2xl font-bold mb-5">User Settings</h3>

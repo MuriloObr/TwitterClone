@@ -42,7 +42,7 @@ export function TweetDialog({ opened }: { opened: number }) {
   return (
     <dialog
       ref={thatDialog}
-      className="h-fit w-2/6 p-6 backdrop:bg-zinc-700/40 rounded-xl absolute -top-2/3"
+      className="h-fit w-2/6 p-6 backdrop:bg-zinc-700/40 rounded-xl absolute -top-2/3 max-lg:w-5/6"
     >
       <div className="flex flex-col flex-wrap gap-4">
         <X
