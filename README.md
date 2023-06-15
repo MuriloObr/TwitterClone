@@ -1,5 +1,5 @@
 # Twitter Clone UI
-Um clone da interface do twitter, com algumas funcionalidades do mesmo funcionando localmente
+Um clone da interface do twitter feito em react com next e typescript, com algumas funcionalidades do mesmo funcionando localmente
 
 ## Link do projeto
 
